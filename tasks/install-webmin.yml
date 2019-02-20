@@ -2,7 +2,7 @@
 # install webmin for easy management
 - name: install webmin dependencies
   apt:
-    state: latest
+    state: present
     name: [
       'perl',
       'python',

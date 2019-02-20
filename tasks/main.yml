@@ -8,7 +8,7 @@
     upgrade: yes
 - name: install common raspbian packages
   apt:
-    state: latest
+    state: present
     name: [
       'git',
       'psmisc',
