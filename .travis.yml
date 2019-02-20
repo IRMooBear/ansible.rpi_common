@@ -1,11 +1,11 @@
 ---
+sudo: required
 language: python
 python: "2.7"
 
 before_install:
   # Make sure everything's up to date.
-  - su
-  - do apt-get update -qq
+  - sudo apt-get update -qq
 
 install:
   # Install Ansible.
