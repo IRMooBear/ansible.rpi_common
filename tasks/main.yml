@@ -27,6 +27,8 @@
       'raspberrypi-kernel-headers',
       'dh-autoreconf'
     ]
+- include: install-webmin.yml
+- include: compile-uhubctl.yml
 - name: set host name to hostname variable
   lineinfile:
     dest: /etc/hostname
@@ -39,7 +41,4 @@
     regexp: '^raspberrypi'
     line: "{{ ansible_host }}"
   when: hostname is undefined
-- include: install-webmin.yml
-- include: compile-uhubctl.yml
-- name: reboot
-  reboot:
+
