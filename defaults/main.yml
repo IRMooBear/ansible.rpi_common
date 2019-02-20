@@ -1,3 +1,4 @@
 ---
 # defaults file for pi-stretch-common
 webmin_version: "1.900"
+uhubctl_version: "v2.0.0"
