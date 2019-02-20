@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/IRMooBear/pi-stretch-common.svg?branch=master)](https://travis-ci.com/IRMooBear/pi-stretch-common)
+
 pi-common
 =========
 
