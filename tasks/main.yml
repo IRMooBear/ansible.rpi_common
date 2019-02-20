@@ -1,5 +1,5 @@
 ---
-# tasks file for pi-common
+# tasks file for pi_stretch_common
 - name: update apt
   retries: 3
   delay: 10
@@ -41,4 +41,21 @@
     regexp: '^raspberrypi'
     line: "{{ ansible_host }}"
   when: pi_hostname is undefined
+- name: disable BLE
+  blockinfile:
+    path: /boot/config.txt
+    state: present
+    block: |
+      # Disable BLE
+      dtoverlay=pi3-disable-bt
+- name: disable BLE services
+  systemd:
+    name: "{{ item }}"
+    state: stopped
+  with_items: [
+    'hciuart.service',
+    'bluealsa.service',
+    'bluetooth.service'
+  ]
+
 

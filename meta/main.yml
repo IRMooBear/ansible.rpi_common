@@ -1,6 +1,6 @@
 galaxy_info:
   author: Anh Nguyen
-  description: configure raspberry pi headless.
+  description: configure raspberry pi like me.
   company: N/A
   license: BSD
   min_ansible_version: 2.7

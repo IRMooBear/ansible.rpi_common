@@ -1,5 +1,5 @@
 ---
-# handlers file for pi-stretch-common
+# handlers file for pi_stretch_common
 - name: make uhubctl
   become: false
   make:

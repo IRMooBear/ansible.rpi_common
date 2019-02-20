@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.com/IRMooBear/pi-stretch-common.svg?branch=master)](https://travis-ci.com/IRMooBear/pi-stretch-common)
+[![Build Status](https://travis-ci.com/IRMooBear/pi_stretch_common.svg?branch=master)](https://travis-ci.com/IRMooBear/pi_stretch_common)
 
-pi-stretch-common
+pi_stretch_common
 =========
 
 How I manage my army of Raspberry Pies...  Provide common tools and configuration for a new raspberry-pi on stretch.
