@@ -19,9 +19,15 @@
     update: yes
     version: "{{ uhubctl_version }}"
   register: uhubctl_repo
-  notify:
-    - set pi user as owner
-    - make uhubctl
-    - install uhubctl
 - debug:
     var: uhubctl_repo
+- name: set pi user as owner of uhubctl folder
+  file:
+    path: /usr/local/src/uhubctl
+    owner: pi
+    recurse: true
+  notify:
+    - make uhubctl
+    - install uhubctl
+- meta: flush_handlers
+
