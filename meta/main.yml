@@ -6,9 +6,8 @@ galaxy_info:
   min_ansible_version: 2.7
   platforms:
   - name: Debian
-    release: stretch
     versions:
-      - all
+      - stretch
   galaxy_tags:
     - system
     - raspberry
