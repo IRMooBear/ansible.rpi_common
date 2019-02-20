@@ -40,5 +40,5 @@
     dest: /etc/hostname
     regexp: '^raspberrypi'
     line: "{{ ansible_host }}"
-  when: hostname is undefined
+  when: pi_hostname is undefined
 
