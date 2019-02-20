@@ -13,24 +13,11 @@
     dest: /usr/local/src/uhubctl
     clone: yes
     update: yes
+    version: v2.0.0
   register: uhubctl_repo
+  notify:
+    - set pi user as owner
+    - make uhubctl
+    - install uhubctl
 - debug:
     var: uhubctl_repo
-- name: set pi user as owner
-  file:
-    path: /usr/local/src/uhubctl
-    owner: pi
-    recurse: true
-  when: uhubctl_repo.changed
-- name: make uhubctl
-  become: false
-  make:
-  args:
-    chdir: /usr/local/src/uhubctl
-  when: uhubctl_repo.changed
-- name: install uhubctl
-  make:
-    target: install
-  args:
-    chdir: /usr/local/src/uhubctl
-  when: uhubctl_repo.changed
