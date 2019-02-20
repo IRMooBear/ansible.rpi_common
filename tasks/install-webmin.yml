@@ -1,6 +1,8 @@
 ---
 # install webmin for easy management
 - name: install webmin dependencies
+  retries: 3
+  delay: 10
   apt:
     state: present
     name: [
@@ -14,6 +16,8 @@
       'apt-show-versions'
     ]
 - name: install webmin
+  retries: 3
+  delay: 30
   apt:
     deb: http://prdownloads.sourceforge.net/webadmin/webmin_{{ webmin_version }}_all.deb
     state: present

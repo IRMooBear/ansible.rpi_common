@@ -1,6 +1,8 @@
 ---
 # Compile
 - name: install uhubctl dependencies
+  retries: 3
+  delay: 10
   apt:
     state: present
     name: [
@@ -8,6 +10,8 @@
       'libusb-1.0-0',
     ]
 - name: clone uhubctl
+  retries: 3
+  delay: 10
   git:
     repo: https://github.com/mvp/uhubctl.git
     dest: /usr/local/src/uhubctl

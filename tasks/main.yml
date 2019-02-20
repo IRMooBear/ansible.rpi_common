@@ -1,12 +1,18 @@
 ---
 # tasks file for pi-common
 - name: update apt
+  retries: 3
+  delay: 10
   apt:
     update_cache: yes
 - name: upgrade apt packages
+  retries: 3
+  delay: 10
   apt:
     upgrade: yes
 - name: install common raspbian packages
+  retries: 3
+  delay: 10
   apt:
     state: present
     name: [
