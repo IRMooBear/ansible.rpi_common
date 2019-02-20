@@ -1,0 +1,36 @@
+---
+# Compile
+- name: install uhubctl dependencies
+  apt:
+    state: latest
+    name: [
+      'libusb-1.0-0-dev',
+      'libusb-1.0-0',
+    ]
+- name: clone uhubctl
+  git:
+    repo: https://github.com/mvp/uhubctl.git
+    dest: /usr/local/src/uhubctl
+    clone: yes
+    update: yes
+  register: uhubctl_repo
+- debug:
+    var: uhubctl_repo
+- name: set pi user as owner
+  file:
+    path: /usr/local/src/uhubctl
+    owner: pi
+    recurse: true
+  when: uhubctl_repo.changed
+- name: make uhubctl
+  become: false
+  make:
+  args:
+    chdir: /usr/local/src/uhubctl
+  when: uhubctl_repo.changed
+- name: install uhubctl
+  make:
+    target: install
+  args:
+    chdir: /usr/local/src/uhubctl
+  when: uhubctl_repo.changed

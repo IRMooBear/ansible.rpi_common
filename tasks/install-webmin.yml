@@ -1,0 +1,19 @@
+---
+# install webmin for easy management
+- name: install webmin dependencies
+  apt:
+    state: latest
+    name: [
+      'perl',
+      'python',
+      'openssl',
+      'libnet-ssleay-perl',
+      'libauthen-pam-perl',
+      'libpam-runtime',
+      'libio-pty-perl',
+      'apt-show-versions'
+    ]
+- name: install webmin
+  apt:
+    deb: http://prdownloads.sourceforge.net/webadmin/webmin_{{ webmin_version }}_all.deb
+    state: present

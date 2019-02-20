@@ -1,0 +1,16 @@
+galaxy_info:
+  author: Anh Nguyen
+  description: configure raspberry pi headless.
+  company: N/A
+  license: BSD
+  min_ansible_version: 2.7
+  platforms:
+  - name: Debian
+    release: stretch
+    versions:
+      - 4
+  galaxy_tags:
+    - system
+    - raspberry
+    - pi
+dependencies:

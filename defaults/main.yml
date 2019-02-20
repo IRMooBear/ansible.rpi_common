@@ -1,0 +1,3 @@
+---
+# defaults file for pi-stretch-common
+webmin_version: "1.900"
