@@ -29,16 +29,16 @@
     ]
 - include: install-webmin.yml
 - include: compile-uhubctl.yml
-- name: set host name to hostname variable
+- name: set host name to hostname pi_hostname
   lineinfile:
     dest: /etc/hostname
-    regexp: '^raspberrypi'
+    regexp: '^raspberrypi$'
     line: "{{ pi_hostname }}"
   when: pi_hostname is defined
 - name: set hostname to ansible host
   lineinfile:
     dest: /etc/hostname
-    regexp: '^raspberrypi'
+    regexp: '^raspberrypi$'
     line: "{{ ansible_host }}"
   when: pi_hostname is undefined
 - name: disable BLE
@@ -54,6 +54,26 @@
     state: stopped
   with_items: [
     'hciuart.service',
-    'bluealsa.service',
-    'bluetooth.service'
+    'bluetooth',
+    'bluetooth.service',
   ]
+- name: install disable-hdmi.service
+  template:
+    src: disable-hdmi.service.ini
+    dest: /lib/systemd/system/disable-hdmi.service
+    mode: 0755
+- name: reload systemd
+  systemd:
+    daemon_reload: yes
+- name: disable HDMI
+  systemd:
+    name: disable-hdmi.service
+    enabled: yes
+    state: restarted
+- name: reduce GPU RAM
+  blockinfile:
+    path: /boot/config.txt
+    state: present
+    block: |
+      # Reduce GPU RAM to 16MB
+      gpu_mem=16
