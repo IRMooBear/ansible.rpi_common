@@ -15,8 +15,6 @@
   delay: 10
   until: result.rc == 0
 - name: install common raspbian packages
-  retries: 3
-  delay: 10
   apt:
     state: present
     name: [
@@ -31,6 +29,10 @@
       'raspberrypi-kernel-headers',
       'dh-autoreconf'
     ]
+  register: result
+  retries: 3
+  delay: 10
+  until: result.rc == 0
 - include: install-webmin.yml
 - include: compile-uhubctl.yml
 - name: set host name to hostname pi_hostname
