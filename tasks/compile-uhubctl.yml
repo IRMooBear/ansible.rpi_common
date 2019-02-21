@@ -1,17 +1,17 @@
 ---
 # Compile
 - name: install uhubctl dependencies
-  retries: 3
-  delay: 10
   apt:
     state: present
     name: [
       'libusb-1.0-0-dev',
       'libusb-1.0-0',
     ]
-- name: clone uhubctl
+  register: result
   retries: 3
   delay: 10
+  until: result.rc == 0
+- name: clone uhubctl
   git:
     repo: https://github.com/mvp/uhubctl.git
     dest: /usr/local/src/uhubctl
@@ -19,6 +19,9 @@
     update: yes
     version: "{{ uhubctl_version }}"
   register: uhubctl_repo
+  retries: 3
+  delay: 10
+  until: uhubctl_repo.rc == 0
 - debug:
     var: uhubctl_repo
 - name: set pi user as owner of uhubctl folder
