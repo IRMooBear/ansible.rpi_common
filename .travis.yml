@@ -27,7 +27,6 @@ install:
 
 script:
   - "ansible-playbook -i tests/inventory tests/test.yml --syntax-check"
-  - "ansible-playbook -i tests/inventory tests/test.yml"
 #  - docker exec -w /pi_stretch_common ant ansible-playbook -i tests/inventory tests/test.yml --syntax-check
 #  - docker exec -w /pi_stretch_common ant ansible-playbook -i tests/inventory tests/test.yml
 
