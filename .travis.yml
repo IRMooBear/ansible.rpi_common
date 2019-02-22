@@ -10,8 +10,13 @@ before_install:
   # Make sure everything's up to date.
   - sudo apt-get update -qq
   - docker pull raspbian/stretch
-  - docker run -d -p 127.0.0.1:80:4567 raspbian/stretch /bin/sh -c "ansible-playbook -i tests/inventory tests/test.yml --syntax-check"
+  - docker run raspbian/stretch -a stdout /bin/sh -c "curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py; python get-pip.py; pip install ansible"
+  - docker run raspbian/stretch -a stdout /bin/sh -c "git clone --depth=50 --branch=master https://github.com/IRMooBear/pi_stretch_common.git"
+  - docker run raspbian/stretch -a stdout /bin/sh -c "cd pi_stretch_common; ansible-playbook -i tests/inventory tests/test.yml --syntax-check"
   - docker ps -a
+  - docker run raspbian/stretch -a stdout /bin/sh -c "cd pi_stretch_common; ansible-playbook -i tests/inventory tests/test.yml"
+  - docker ps -a
+
 
 install:
   # Install Ansible.
