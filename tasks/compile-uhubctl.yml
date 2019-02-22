@@ -10,7 +10,7 @@
   register: result
   retries: 3
   delay: 10
-  until: result.rc == 0
+  until: not result.failed
 - name: clone uhubctl
   git:
     repo: https://github.com/mvp/uhubctl.git
@@ -21,7 +21,7 @@
   register: uhubctl_repo
   retries: 3
   delay: 10
-  until: uhubctl_repo.rc == 0
+  until: not uhubctl_repo.failed
 - debug:
     var: uhubctl_repo
 - name: set pi user as owner of uhubctl folder

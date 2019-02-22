@@ -16,7 +16,14 @@
   register: result
   retries: 3
   delay: 10
-  until: result.rc == 0
+  until: not result.failed
+- name: check webmin already installed
+  apt:
+    name: webmin
+    state: present
+  ignore_errors: yes
+  no_log: true
+  register: webmin
 - name: install webmin
   apt:
     deb: http://prdownloads.sourceforge.net/webadmin/webmin_{{ webmin_version }}_all.deb
@@ -24,4 +31,5 @@
   register: result
   retries: 3
   delay: 30
-  until: result.rc == 0
+  until: not result.failed
+  when: webmin.failed

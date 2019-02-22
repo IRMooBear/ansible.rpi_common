@@ -1,19 +1,20 @@
 ---
 # tasks file for pi_stretch_common
-- name: update apt
-  apt:
-    update_cache: yes
-  register: result
-  retries: 3
-  delay: 10
-  until: result.rc == 0
 - name: upgrade apt packages
   apt:
+    cache_valid_time: 84600
     upgrade: yes
   register: result
   retries: 3
   delay: 10
-  until: result.rc == 0
+  until: not result.failed
+- name: upgrade apt dist
+  apt:
+    upgrade: dist
+  register: result
+  retries: 3
+  delay: 10
+  until: not result.failed
 - name: install common raspbian packages
   apt:
     state: present
@@ -32,7 +33,7 @@
   register: result
   retries: 3
   delay: 10
-  until: result.rc == 0
+  until: not result.failed
 - include: install-webmin.yml
 - include: compile-uhubctl.yml
 - name: set host name to hostname pi_hostname

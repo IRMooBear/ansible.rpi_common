@@ -3,9 +3,15 @@ sudo: required
 language: python
 python: "2.7"
 
+services:
+  - docker
+
 before_install:
   # Make sure everything's up to date.
   - sudo apt-get update -qq
+  - docker pull raspbian/stretch
+  - docker run -d -p 127.0.0.1:80:4567 raspbian/stretch /bin/sh -c "ansible-playbook -i tests/inventory tests/test.yml --syntax-check"
+  - docker ps -a
 
 install:
   # Install Ansible.
@@ -16,6 +22,7 @@ install:
 
 script:
   - "ansible-playbook -i tests/inventory tests/test.yml --syntax-check"
+  - "ansible-playbook -i tests/inventory tests/test.yml"
 
 notifications:
-  webhooks: https://galaxy.ansible.com/api/v1/notifications/
+  webhooks: "https://galaxy.ansible.com/api/v1/notifications/"
