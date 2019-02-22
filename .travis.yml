@@ -4,20 +4,19 @@ language: python
 python: "2.7"
 
 services:
-  - docker
+#  - docker
 
 before_install:
   # Make sure everything's up to date.
   - sudo apt-get update -qq
-  - docker pull raspbian/stretch
-  - docker run raspbian/stretch /bin/sh -c "sudo apt-get install python -y"
-  - docker exec stretch /bin/sh -c "curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py; python get-pip.py; pip install ansible"
-  - docker exec stretch /bin/sh -c "git clone --depth=50 --branch=master https://github.com/IRMooBear/pi_stretch_common.git"
-  - docker exec stretch /bin/sh -c "cd pi_stretch_common; ansible-playbook -i tests/inventory tests/test.yml --syntax-check"
-  - docker ps -a
-  - docker exec stretch /bin/sh -c "cd pi_stretch_common; ansible-playbook -i tests/inventory tests/test.yml"
-  - docker ps -a
-
+#  - docker pull raspbian/stretch
+#  - docker run --name ant -d -p 127.0.0.1:80:4567 raspbian/stretch
+#  - docker exec -d ant apt-get update
+#  - docker exec -d ant apt-get upgrade -y
+#  - docker exec -d ant apt-get install python python-pip libffi-dev git -y
+#  - docker exec -d ant pip install ansible
+#  - docker exec -d ant git clone --depth=50 --branch=master https://github.com/IRMooBear/pi_stretch_common.git
+#  - docker exec -d -w /pi_stretch_common ant /bin/sh -c "printf '[defaults]\nroles_path = ../' > ansible.cfg"
 
 install:
   # Install Ansible.
@@ -29,6 +28,8 @@ install:
 script:
   - "ansible-playbook -i tests/inventory tests/test.yml --syntax-check"
   - "ansible-playbook -i tests/inventory tests/test.yml"
+#  - docker exec -w /pi_stretch_common ant ansible-playbook -i tests/inventory tests/test.yml --syntax-check
+#  - docker exec -w /pi_stretch_common ant ansible-playbook -i tests/inventory tests/test.yml
 
 notifications:
-  webhooks: "https://galaxy.ansible.com/api/v1/notifications/"
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/
