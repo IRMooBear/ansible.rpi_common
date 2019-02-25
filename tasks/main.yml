@@ -36,18 +36,12 @@
   until: not result.failed
 - include: install-webmin.yml
 - include: compile-uhubctl.yml
-- name: set host name to hostname pi_hostname
+- name: set host name
   lineinfile:
     dest: /etc/hostname
+    backrefs: yes
     regexp: '^raspberrypi$'
-    line: "{{ pi_hostname }}"
-  when: pi_hostname is defined
-- name: set hostname to ansible host
-  lineinfile:
-    dest: /etc/hostname
-    regexp: '^raspberrypi$'
-    line: "{{ ansible_host }}"
-  when: pi_hostname is undefined
+    line: "{% if pi_hostname is defined %}{{ pi_hostname }}{% else %}{{ ansible_host }}{% endif %}.{{ domain }}"
 - name: disable BLE
   blockinfile:
     path: /boot/config.txt
@@ -85,3 +79,15 @@
     block: |
       # Reduce GPU RAM to 16MB
       gpu_mem=16
+- name: change pi user password
+  user:
+    name: pi
+    password: "{{ pi_password }}"
+  when: pi_password is defined
+- name: change root password
+  user:
+    name: root
+    password: "{{ pi_root_password }}"
+  when: pi_root_password is defined
+- name: reboot to update changes
+  reboot:
