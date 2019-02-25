@@ -2,19 +2,19 @@
 # tasks file for pi_stretch_common
 - name: upgrade apt packages
   apt:
-    cache_valid_time: 84600
+    cache_valid_time: 86400
     upgrade: yes
-  register: result
+  register: apt_upgrade
   retries: 3
   delay: 10
-  until: not result.failed
+  until: not apt_upgrade.failed
 - name: upgrade apt dist
   apt:
     upgrade: dist
-  register: result
+  register: apt_upgrade_dist
   retries: 3
   delay: 10
-  until: not result.failed
+  until: not apt_upgrade_dist.failed
 - name: install common raspbian packages
   apt:
     state: present
@@ -91,3 +91,7 @@
   when: pi_root_password is defined
 - name: reboot to update changes
   reboot:
+  when: apt_upgrade.changed or apt_upgrade_dist.changed
+- name: re-gather facts
+  setup:
+  when: apt_upgrade.changed or apt_upgrade_dist.changed

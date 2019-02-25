@@ -1,14 +1,2 @@
 ---
 # handlers file for pi_stretch_common
-- name: make uhubctl
-  become: false
-  make:
-  args:
-    chdir: /usr/local/src/uhubctl
-  when: uhubctl_repo.changed
-- name: install uhubctl
-  make:
-    target: install
-  args:
-    chdir: /usr/local/src/uhubctl
-  when: uhubctl_repo.changed

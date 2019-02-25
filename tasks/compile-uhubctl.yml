@@ -22,14 +22,20 @@
   retries: 3
   delay: 10
   until: not uhubctl_repo.failed
-- debug:
-    var: uhubctl_repo
 - name: set pi user as owner of uhubctl folder
   file:
     path: /usr/local/src/uhubctl
     owner: pi
     recurse: true
-  notify:
-    - make uhubctl
-    - install uhubctl
-- meta: flush_handlers
+- name: make uhubctl
+  become: false
+  make:
+  args:
+    chdir: /usr/local/src/uhubctl
+  when: uhubctl_repo.changed
+- name: install uhubctl
+  make:
+    target: install
+  args:
+    chdir: /usr/local/src/uhubctl
+  when: uhubctl_repo.changed

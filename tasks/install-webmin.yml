@@ -1,5 +1,12 @@
 ---
 # install webmin for easy management
+- name: check webmin already installed
+  apt:
+    name: webmin
+    state: present
+  ignore_errors: yes
+  no_log: true
+  register: webmin
 - name: install webmin dependencies
   apt:
     state: present
@@ -17,13 +24,7 @@
   retries: 3
   delay: 10
   until: not result.failed
-- name: check webmin already installed
-  apt:
-    name: webmin
-    state: present
-  ignore_errors: yes
-  no_log: true
-  register: webmin
+  when: webmin.failed
 - name: install webmin
   apt:
     deb: http://prdownloads.sourceforge.net/webadmin/webmin_{{ webmin_version }}_all.deb
