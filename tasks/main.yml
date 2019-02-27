@@ -23,9 +23,8 @@
     src: disable-hdmi.service.ini
     dest: /lib/systemd/system/disable-hdmi.service
     mode: 0755
-- name: reload systemd
-  systemd:
-    daemon_reload: yes
+  notify:
+    - reload systemd
 - name: disable HDMI
   systemd:
     name: disable-hdmi.service
@@ -38,6 +37,8 @@
     block: |
       # Reduce GPU RAM to 16MB
       gpu_mem=16
+  notify:
+    - reboot
 - name: change pi user password
   user:
     name: pi
@@ -48,9 +49,3 @@
     name: root
     password: "{{ pi_root_password }}"
   when: pi_root_password is defined
-- name: reboot to update changes
-  reboot:
-  when: apt_upgrade.changed or apt_upgrade_dist.changed
-- name: re-gather facts
-  setup:
-  when: apt_upgrade.changed or apt_upgrade_dist.changed
