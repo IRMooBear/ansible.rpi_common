@@ -3,9 +3,3 @@
 - name: reload systemd
   systemd:
     daemon_reload: yes
-- name: reboot
-  reboot:
-  notify:
-    - setup again
-- name: setup again
-  setup:

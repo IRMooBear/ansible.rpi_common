@@ -37,8 +37,6 @@
     block: |
       # Reduce GPU RAM to 16MB
       gpu_mem=16
-  notify:
-    - reboot
 - name: change pi user password
   user:
     name: pi
