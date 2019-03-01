@@ -1,6 +1,5 @@
 ---
 # tasks file for pi_stretch_common
-- include: compile-uhubctl.yml
 - name: disable BLE
   blockinfile:
     path: /boot/config.txt

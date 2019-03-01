@@ -1,6 +1,5 @@
 ---
 # defaults file for pi_stretch_common
-uhubctl_version: "v2.0.0"
 domain: localdomain
 pi_password: "{{ vault_pi_password }}"
 pi_root_password: "{{ vault_pi_root_password }}"
