@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/IRMooBear/pi_stretch_common.svg?branch=master)](https://travis-ci.com/IRMooBear/pi_stretch_common)
+[![Build Status](https://travis-ci.com/IRMooBear/ansible.rpi_common.svg?branch=master)](https://travis-ci.com/IRMooBear/ansible.rpi_common)
 
 pi_stretch_common
 =========

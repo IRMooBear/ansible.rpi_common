@@ -1,5 +1,5 @@
 galaxy_info:
-  role_name: rpi
+  role_name: rpi_common
   author: Anh Nguyen
   description: configure raspberry pi like me.
   company: N/A
