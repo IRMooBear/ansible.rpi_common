@@ -1,5 +1,5 @@
 ---
 # defaults file for pi_stretch_common
-domain: localdomain
+ble: no
 pi_password: "{{ vault_pi_password }}"
 pi_root_password: "{{ vault_pi_root_password }}"
