@@ -7,6 +7,8 @@
     block: |
       # Disable BLE
       dtoverlay=pi3-disable-bt
+      # Reduce GPU RAM to 16MB
+      gpu_mem=16
 - name: disable BLE services
   systemd:
     name: "{{ item }}"
@@ -21,21 +23,16 @@
   template:
     src: disable-hdmi.service.ini
     dest: /lib/systemd/system/disable-hdmi.service
-    mode: 0755
+    owner: root
+    group: root
+    mode: 0644
   notify:
     - reload systemd
 - name: disable HDMI
   systemd:
-    name: disable-hdmi.service
+    name: disable-hdmi
     enabled: yes
     state: restarted
-- name: reduce GPU RAM
-  blockinfile:
-    path: /boot/config.txt
-    state: present
-    block: |
-      # Reduce GPU RAM to 16MB
-      gpu_mem=16
 - name: change pi user password
   user:
     name: pi
