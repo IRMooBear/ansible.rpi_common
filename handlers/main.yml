@@ -3,3 +3,14 @@
 - name: reload systemd
   systemd:
     daemon_reload: yes
+- name: disable HDMI
+  systemd:
+    name: disable-hdmi
+    enabled: yes
+    state: restarted
+- name: reboot
+  reboot:
+  notify:
+    - setup again
+- name: setup again
+  setup:

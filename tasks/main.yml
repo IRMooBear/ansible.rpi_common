@@ -1,24 +1,64 @@
 ---
 # tasks file for pi_stretch_common
-- name: disable BLE
+- name: install raspberry pi only packages
+  apt:
+    state: present
+    name: [
+      'watchdog',
+    ]
+  register: result
+  retries: 3
+  delay: 10
+  until: not result.failed
+- name: configure watchdog
+  blockinfile:
+    path: /etc/watchdog.conf
+    block: |
+      admin           = {{ watchdog_admin }}
+      interval        = {{ watchdog_interval }}
+      retry-timeout   = {{ watchdog_retry_timeout }}
+      repair-maximum  = {{ watchdog_repair_maximum }}
+      log-dir         = {{ watchdog_log }}
+      max-load-1      = {{ watchdog_max_load_1 }}
+      max-load-5      = {{ watchdog_max_load_5 }}
+      max-load-15     = {{ watchdog_max_load_15 }}
+      {% if watchdog_interface is defined %}
+      interface       = {{ watchdog_interface }}
+      {% endif %}
+      {% for ping in watchdog_pings %}
+      ping            = {{ ping }}
+      {% endfor %}
+  notify:
+    - reboot
+- name: start watchdog service on boot
+  systemd:
+    name: watchdog.service
+    state: started
+    enabled: yes
+- name: modify boot config
   blockinfile:
     path: /boot/config.txt
     state: present
     block: |
+      {% if not ble %}
       # Disable BLE
       dtoverlay=pi3-disable-bt
-      # Reduce GPU RAM to 16MB
-      gpu_mem=16
-- name: disable BLE services
+      {% endif %}
+      # Reduce GPU RAM
+      gpu_mem={{ gpu_mem }}
+  notify:
+    - reboot
+- name: disable BLE & HCIUART services
   systemd:
     name: "{{ item }}"
     enabled: no
     state: stopped
-  with_items: [
-    'hciuart.service',
-    'bluetooth',
-    'bluetooth.service',
-  ]
+  with_items:
+    - hciuart.service
+    - bluetooth
+    - bluetooth.service
+- name: disable default raspberry pi swap
+  command: dphys-swapfile swapoff && dphys-swapfile uninstall && update-rc.d dphys-swapfile remove
 - name: install disable-hdmi.service
   template:
     src: disable-hdmi.service.ini
@@ -28,18 +68,18 @@
     mode: 0644
   notify:
     - reload systemd
-- name: disable HDMI
-  systemd:
-    name: disable-hdmi
-    enabled: yes
-    state: restarted
+    - disable HDMI
+    - reboot
 - name: change pi user password
   user:
     name: pi
     password: "{{ pi_password }}"
+  no_log: yes
   when: pi_password is defined
 - name: change root password
   user:
     name: root
     password: "{{ pi_root_password }}"
+  no_log: yes
   when: pi_root_password is defined
+- meta: flush_handlers

@@ -1,5 +1,18 @@
 ---
 # defaults file for pi_stretch_common
 ble: no
+gpu_mem: 16
 pi_password: "{{ vault_pi_password }}"
 pi_root_password: "{{ vault_pi_root_password }}"
+
+watchdog_admin: root
+watchdog_interval: 30
+watchdog_retry_timeout: 600
+watchdog_repair_maximum: 3
+watchdog_max_load_1: 24
+watchdog_max_load_5: 18
+watchdog_max_load_15: 12
+watchdog_interface: wlan0
+watchdog_log: /var/log/watchdog
+#watchdog_pings:
+#  - 192.168.0.1
