@@ -1,7 +1,7 @@
 ---
 # defaults file for pi_stretch_common
-ble: no
-gpu_mem: 16
+pi_ble: no
+pi_gpu_mem: 16
 pi_password: "{{ vault_pi_password }}"
 pi_root_password: "{{ vault_pi_root_password }}"
 
@@ -16,3 +16,6 @@ watchdog_interface: wlan0
 watchdog_log: /var/log/watchdog
 #watchdog_pings:
 #  - 192.168.0.1
+
+iftop_interface: wlan0
+iftop_ip4_netmask: 192.168.0.1/24

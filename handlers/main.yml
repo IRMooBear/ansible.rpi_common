@@ -14,3 +14,8 @@
     - setup again
 - name: setup again
   setup:
+- name: restart watchdog
+  systemd:
+    name: watchdog.service
+    state: started
+    enabled: yes

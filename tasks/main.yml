@@ -1,10 +1,11 @@
 ---
 # tasks file for pi_stretch_common
-- name: install raspberry pi only packages
+- name: install raspberry pi common packages
   apt:
     state: present
     name: [
-      'watchdog',
+      'memtester',
+      'iftop',
     ]
   register: result
   retries: 3
@@ -29,23 +30,25 @@
       ping            = {{ ping }}
       {% endfor %}
   notify:
+    - restart watchdog
     - reboot
-- name: start watchdog service on boot
-  systemd:
-    name: watchdog.service
-    state: started
-    enabled: yes
 - name: modify boot config
   blockinfile:
     path: /boot/config.txt
     state: present
     block: |
-      {% if not ble %}
+      gpu_mem={{ pi_gpu_mem }}
+      {% if pi_force_turbo is defined %}
+      force_turbo={{ pi_force_turbo }}
+      {% endif %}
+      {% if not pi_ble %}
       # Disable BLE
       dtoverlay=pi3-disable-bt
       {% endif %}
-      # Reduce GPU RAM
-      gpu_mem={{ gpu_mem }}
+      {% if pi_over_voltage is defined %}
+      # Manually set voltage
+      over_voltage={{ pi_over_voltage }}
+      {% endif %}
   notify:
     - reboot
 - name: disable BLE & HCIUART services
@@ -70,6 +73,16 @@
     - reload systemd
     - disable HDMI
     - reboot
+- name: install iftop configuration file
+  template:
+    src: iftoprc.ini
+    dest: "{{ item.dest }}/.iftoprc"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: 0600
+  loop:
+    - { dest: "/home/{{ ansible_user}}", owner: "{{ ansible_user }}", group: "{{ ansible_user }}" }
+    - { dest: /root, owner: root, group: root }
 - name: change pi user password
   user:
     name: pi
