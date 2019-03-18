@@ -19,3 +19,7 @@
     name: watchdog.service
     state: started
     enabled: yes
+- name: restart ssh
+  service:
+    name: ssh
+    state: restarted

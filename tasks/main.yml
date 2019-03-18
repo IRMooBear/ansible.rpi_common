@@ -4,6 +4,7 @@
   apt:
     state: present
     name: [
+      'watchdog',
       'memtester',
       'iftop',
     ]
@@ -23,11 +24,15 @@
       max-load-1      = {{ watchdog_max_load_1 }}
       max-load-5      = {{ watchdog_max_load_5 }}
       max-load-15     = {{ watchdog_max_load_15 }}
+      watchdog-device = {{ watchdog_device }}
+      watchdog-timeout = {{ watchdog_timeout }}
+      sigterm-delay   = {{ watchdog_sigterm_delay }}
       {% if watchdog_interface is defined %}
       interface       = {{ watchdog_interface }}
       {% endif %}
       {% for ping in watchdog_pings %}
       ping            = {{ ping }}
+      ping-count      = 1
       {% endfor %}
   notify:
     - restart watchdog
@@ -40,6 +45,9 @@
       gpu_mem={{ pi_gpu_mem }}
       {% if pi_force_turbo is defined %}
       force_turbo={{ pi_force_turbo }}
+      {% endif %}
+      {% if pi_arm_freq is defined %}
+      arm_freq={{ pi_arm_freq }}
       {% endif %}
       {% if not pi_ble %}
       # Disable BLE
@@ -62,6 +70,7 @@
     - bluetooth.service
 - name: disable default raspberry pi swap
   command: dphys-swapfile swapoff && dphys-swapfile uninstall && update-rc.d dphys-swapfile remove
+  when: swap is defined and swap
 - name: install disable-hdmi.service
   template:
     src: disable-hdmi.service.ini
@@ -83,6 +92,16 @@
   loop:
     - { dest: "/home/{{ ansible_user}}", owner: "{{ ansible_user }}", group: "{{ ansible_user }}" }
     - { dest: /root, owner: root, group: root }
+- name: configure and secure sshd
+  blockinfile:
+    path: /etc/ssh/sshd_config
+    validate: /usr/sbin/sshd -T -c %s
+    block: |
+      PermitRootLogin {{ 'yes' if sshd_permit_root_login else 'no' }}
+      PasswordAuthentication {{ 'yes' if sshd_password_authentication else 'no' }}
+      ClientAliveInterval 10
+  notify:
+    - restart ssh
 - name: change pi user password
   user:
     name: pi

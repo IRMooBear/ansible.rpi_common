@@ -6,16 +6,21 @@ pi_password: "{{ vault_pi_password }}"
 pi_root_password: "{{ vault_pi_root_password }}"
 
 watchdog_admin: root
-watchdog_interval: 30
-watchdog_retry_timeout: 600
+watchdog_interval: 5
+watchdog_sigterm_delay: 60
+watchdog_retry_timeout: 300
 watchdog_repair_maximum: 3
 watchdog_max_load_1: 24
 watchdog_max_load_5: 18
 watchdog_max_load_15: 12
-watchdog_interface: wlan0
 watchdog_log: /var/log/watchdog
+watchdog_device: /dev/watchdog
+watchdog_timeout: 15
 #watchdog_pings:
 #  - 192.168.0.1
 
 iftop_interface: wlan0
 iftop_ip4_netmask: 192.168.0.1/24
+
+sshd_permit_root_login: no
+sshd_password_authentication: yes
