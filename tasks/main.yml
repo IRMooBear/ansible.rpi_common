@@ -1,18 +1,24 @@
 ---
 # tasks file for pi_stretch_common
 - name: install raspberry pi common packages
+  become: yes
   apt:
     state: present
-    name: [
-      'watchdog',
-      'memtester',
-      'iftop',
-    ]
+    name: "{{ pi_common_packages }}"
   register: result
   retries: 3
   delay: 10
   until: not result.failed
+- name: generate en_US locale
+  become: yes
+  locale_gen:
+    name: en_US
+    state: present
+- name: configure locale
+  become: yes
+  command: update-locale LANG=en_US.utf8 LC_ALL=en_US.utf8 LANGUAGE=en_US:en
 - name: configure watchdog
+  become: yes
   blockinfile:
     path: /etc/watchdog.conf
     block: |
@@ -38,6 +44,7 @@
     - restart watchdog
     - reboot
 - name: modify boot config
+  become: yes
   blockinfile:
     path: /boot/config.txt
     state: present
@@ -53,6 +60,9 @@
       # Disable BLE
       dtoverlay=pi3-disable-bt
       {% endif %}
+      {% if pi_spi is defined and pi_spi %}
+      dtparam=spi=on
+      {% endif %}
       {% if pi_over_voltage is defined %}
       # Manually set voltage
       over_voltage={{ pi_over_voltage }}
@@ -60,18 +70,20 @@
   notify:
     - reboot
 - name: disable BLE & HCIUART services
+  become: yes
   systemd:
     name: "{{ item }}"
     enabled: no
     state: stopped
   with_items:
-    - hciuart.service
+    - hciuart
     - bluetooth
-    - bluetooth.service
 - name: disable default raspberry pi swap
+  become: yes
   command: dphys-swapfile swapoff && dphys-swapfile uninstall && update-rc.d dphys-swapfile remove
   when: swap is defined and swap
 - name: install disable-hdmi.service
+  become: yes
   template:
     src: disable-hdmi.service.ini
     dest: /lib/systemd/system/disable-hdmi.service
@@ -83,6 +95,7 @@
     - disable HDMI
     - reboot
 - name: install iftop configuration file
+  become: yes
   template:
     src: iftoprc.ini
     dest: "{{ item.dest }}/.iftoprc"
@@ -93,6 +106,7 @@
     - { dest: "/home/{{ ansible_user}}", owner: "{{ ansible_user }}", group: "{{ ansible_user }}" }
     - { dest: /root, owner: root, group: root }
 - name: configure and secure sshd
+  become: yes
   blockinfile:
     path: /etc/ssh/sshd_config
     validate: /usr/sbin/sshd -T -c %s
@@ -103,12 +117,14 @@
   notify:
     - restart ssh
 - name: change pi user password
+  become: yes
   user:
     name: pi
     password: "{{ pi_password }}"
   no_log: yes
   when: pi_password is defined
 - name: change root password
+  become: yes
   user:
     name: root
     password: "{{ pi_root_password }}"

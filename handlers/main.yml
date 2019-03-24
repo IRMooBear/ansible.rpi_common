@@ -1,25 +1,30 @@
 ---
 # handlers file for pi_stretch_common
 - name: reload systemd
+  become: yes
   systemd:
     daemon_reload: yes
 - name: disable HDMI
+  become: yes
   systemd:
     name: disable-hdmi
-    enabled: yes
-    state: restarted
+    enabled: "{{ 'yes' if pi_disable_hdmi is defined and pi_disable_hdmi else 'no' }} "
+    state: "{{ 'restarted' if pi_disable_hdmi is defined and pi_disable_hdmi else 'stopped' }}"
 - name: reboot
+  become: yes
   reboot:
   notify:
     - setup again
 - name: setup again
   setup:
 - name: restart watchdog
+  become: yes
   systemd:
     name: watchdog.service
     state: started
     enabled: yes
 - name: restart ssh
+  become: yes
   service:
     name: ssh
     state: restarted
