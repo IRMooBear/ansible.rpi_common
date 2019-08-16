@@ -36,10 +36,12 @@
       {% if watchdog_interface is defined %}
       interface       = {{ watchdog_interface }}
       {% endif %}
+      {% if watchdog_pings is defined %}
       {% for ping in watchdog_pings %}
       ping            = {{ ping }}
       ping-count      = 1
       {% endfor %}
+      {% endif %}
   notify:
     - restart watchdog
     - reboot
